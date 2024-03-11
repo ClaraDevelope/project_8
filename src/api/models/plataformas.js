@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const plataformasSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    calification: { type: Number },
+    calification: { type: Number, required: false },
     image: { type: String, required: true, trim: true }
   },
   {

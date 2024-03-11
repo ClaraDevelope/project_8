@@ -1,3 +1,4 @@
+const deleteImgCloudinary = require('../../utils/deleteFile')
 const Contenido = require('../models/contenido')
 
 const getContenido = async (req, res, next) => {
@@ -14,6 +15,11 @@ const postContenido = async (req, res, next) => {
     const newContenido = new Contenido(req.body)
     if (req.file) {
       newContenido.image = req.file.path
+    }
+    if (req.user.rol === 'admin') {
+      newContenido.verified = true
+    } else {
+      newContenido.verified = false
     }
     const contenidos = await newContenido.save()
     res.status(201).json(contenidos)
@@ -36,7 +42,7 @@ const updateContenido = async (req, res, next) => {
     if (!contenidoUpdated) {
       return res.status(404).json({ message: 'Contenido no encontrado' })
     }
-    res.status(200).json(contenidoUpdated)
+    return res.status(200).json(contenidoUpdated)
   } catch (error) {
     return res.status(400).json('Error al hacer update de los contenidos')
   }
@@ -46,8 +52,10 @@ const deleteContenido = async (req, res, next) => {
   try {
     const { id } = req.params
     const contenido = await Contenido.findByIdAndDelete(id)
-    if (contenido.img) deleteImgCloudinary(contenido.img)
-    res.status(200).json(contenido)
+    if (contenido.image) {
+      deleteImgCloudinary(contenido.image)
+    }
+    return res.status(200).json(contenido)
   } catch (error) {
     return res.status(400).json('Error al hacer delete de los contenidos')
   }

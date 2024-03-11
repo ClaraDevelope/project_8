@@ -17,7 +17,8 @@ const contenidoSchema = new mongoose.Schema(
       }
     ],
     calification: { type: Number },
-    image: { type: String, required: true, trim: true }
+    image: { type: String, required: true, trim: true },
+    verified: { type: Boolean, required: true, default: false }
   },
   {
     collection: 'contenido',

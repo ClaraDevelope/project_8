@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const { connectBD } = require('./src/config/db')
 const { contenidoRouter } = require('./src/api/routes/contenido')
+const { plataformasRouter } = require('./src/api/routes/plataformas')
+const { usersRouter } = require('./src/api/routes/users')
 const cloudinary = require('cloudinary').v2
 
 const app = express()
@@ -16,19 +18,13 @@ cloudinary.config({
 })
 
 app.use('/api/v1/contenido', contenidoRouter)
+app.use('/api/v1/plataformas', plataformasRouter)
+app.use('/api/v1/users', usersRouter)
 
 app.use('*', (req, res, next) => {
   return res.status(404).json('Ruta no encontrada')
 })
 
-// Después de tus rutas
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res
-    .status(500)
-    .json({ error: 'Error interno del servidor', message: err.message })
-})
-
 app.listen(PORT, () => {
-  console.log('escuchamos el puerto en http://localhost' + PORT)
+  console.log('escuchamos el puerto en http://localhost:' + PORT)
 })
